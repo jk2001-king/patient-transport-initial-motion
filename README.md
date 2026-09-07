@@ -73,8 +73,6 @@ Phase 1~3에서는 Nav2, SLAM, localization을 연결하지 않는다. 초기 wh
 ```bash
 conda activate isaac_env
 isaacsim
-
-isaacsim에서 open -> /home/jk/Research/patient_initial_ws/isaac_model/patient_transport.usd
 ```
 
 Isaac Sim에서 `File > Open`으로 `isaac_model/patient_transport.usd`를 연다. 첫 실행에서는
