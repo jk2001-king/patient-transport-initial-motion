@@ -1,0 +1,63 @@
+schema_version: 1
+robot:
+  name: patient_transfer_robot
+  source_usd:
+    path: null                 # absolute path; do not guess
+    sha256: null
+  research_usd:
+    path: null
+  articulation_root: null
+  base_prim: null
+
+frames:
+  body_reference: null
+  forward_axis: null
+  left_axis: null
+  up_axis: null
+
+geometry_si:
+  l_f_m: null
+  l_r_m: null
+  active_wheel_radius_m:
+    front: null
+    rear: null
+  caster:
+    fl: {position_xy_m: null, trail_m: null, wheel_radius_m: null}
+    fr: {position_xy_m: null, trail_m: null, wheel_radius_m: null}
+    rl: {position_xy_m: null, trail_m: null, wheel_radius_m: null}
+    rr: {position_xy_m: null, trail_m: null, wheel_radius_m: null}
+
+joints:
+  steering:
+    front:
+      prim_path: null
+      axis: null
+      raw_straight_rad: null
+      physical_sign: null
+      physical_limits_rad: null
+      max_rate_rad_s: null
+    rear:
+      prim_path: null
+      axis: null
+      raw_straight_rad: null
+      physical_sign: null
+      physical_limits_rad: null
+      max_rate_rad_s: null
+  drive:
+    front: {prim_path: null, axis: null, velocity_sign: null}
+    rear: {prim_path: null, axis: null, velocity_sign: null}
+  caster:
+    fl: {swivel_prim_path: null, spin_prim_path: null, swivel_zero_rad: null, swivel_sign: null}
+    fr: {swivel_prim_path: null, spin_prim_path: null, swivel_zero_rad: null, swivel_sign: null}
+    rl: {swivel_prim_path: null, spin_prim_path: null, swivel_zero_rad: null, swivel_sign: null}
+    rr: {swivel_prim_path: null, spin_prim_path: null, swivel_zero_rad: null, swivel_sign: null}
+
+physics:
+  scene_prim: null
+  timestep_s: null
+  substeps: null
+  solver_type: null
+  use_gpu_dynamics: null
+  ground_material: null
+  active_wheel_material: null
+  caster_material: null

@@ -1,0 +1,76 @@
+schema_version: 1
+robot:
+  name: patient_transport
+  source_usd:
+    path: /home/jk/Research/4WS_bicycle_ws/isaac_test/patient_transport.usd
+    sha256: 0eefdabc717cbe110749dde3c20c61f47e6d47f96601d3d70e00be91f010aedb
+  workspace_usd:
+    path: isaac_model/patient_transport.usd
+    sha256: 0eefdabc717cbe110749dde3c20c61f47e6d47f96601d3d70e00be91f010aedb
+  articulation_root: /World/patient_transport/base_link
+  base_prim: /World/patient_transport/base_link
+
+frames:
+  body_reference: /World/patient_transport/base_link
+  forward_axis: +X             # inferred from front/rear geometry; GUI verify
+  left_axis: +Y                # inferred from FL/FR naming; GUI verify
+  up_axis: +Z
+
+geometry_si:
+  l_f_m: 0.645
+  l_r_m: 0.645
+  wheelbase_m: 1.29
+  active_wheel_radius_m: {front: 0.075, rear: 0.075}
+  caster:
+    fl: {position_xy_m: [0.645, 0.3365], trail_m: 0.095, wheel_radius_m: 0.05}
+    fr: {position_xy_m: [0.645, -0.3365], trail_m: 0.095, wheel_radius_m: 0.05}
+    rl: {position_xy_m: [-0.645, 0.3365], trail_m: 0.095, wheel_radius_m: 0.05}
+    rr: {position_xy_m: [-0.645, -0.3365], trail_m: 0.095, wheel_radius_m: 0.05}
+
+joints:
+  steering:
+    front:
+      prim_path: /World/patient_transport/joints/front_steering_joint
+      axis: Z
+      raw_straight_rad: null    # must be visually/dynamically calibrated
+      physical_sign: null
+      physical_limits_rad: [-0.7853981634, 0.7853981634] # verified platform limit: ±45 deg
+      max_rate_rad_s: null
+      usd_drive: {type: acceleration, stiffness: 4000.0, damping: 400.0, max_force: 1500.0}
+    rear:
+      prim_path: /World/patient_transport/joints/rear_steering_joint
+      axis: Z
+      raw_straight_rad: null
+      physical_sign: null
+      physical_limits_rad: [-0.7853981634, 0.7853981634] # verified platform limit: ±45 deg
+      max_rate_rad_s: null
+      usd_drive: {type: acceleration, stiffness: 4000.0, damping: 400.0, max_force: 1500.0}
+  drive:
+    front:
+      prim_path: /World/patient_transport/joints/front_wheel_joint
+      axis: X
+      velocity_sign: null
+      usd_drive: {type: force, stiffness: 0.0, damping: 1.0, max_force: null}
+    rear:
+      prim_path: /World/patient_transport/joints/rear_wheel_joint
+      axis: X
+      velocity_sign: null
+      usd_drive: {type: force, stiffness: 0.0, damping: 1.0, max_force: null}
+  caster:
+    fl: {swivel_prim_path: /World/patient_transport/joints/caster_fl_swivel_joint, spin_prim_path: /World/patient_transport/joints/caster_fl_wheel_joint, swivel_zero_rad: null, swivel_sign: null}
+    fr: {swivel_prim_path: /World/patient_transport/joints/caster_fr_swivel_joint, spin_prim_path: /World/patient_transport/joints/caster_fr_wheel_joint, swivel_zero_rad: null, swivel_sign: null}
+    rl: {swivel_prim_path: /World/patient_transport/joints/caster_rl_swivel_joint, spin_prim_path: /World/patient_transport/joints/caster_rl_wheel_joint, swivel_zero_rad: null, swivel_sign: null}
+    rr: {swivel_prim_path: /World/patient_transport/joints/caster_rr_swivel_joint, spin_prim_path: /World/patient_transport/joints/caster_rr_wheel_joint, swivel_zero_rad: null, swivel_sign: null}
+
+physics:
+  scene_prim: /physicsScene
+  timestep_s: null             # not authored in current USD
+  substeps: null
+  solver_type: null
+  use_gpu_dynamics: null
+  base_mass_kg: 220.0
+  assembled_rigid_body_mass_kg: 240.3372079473
+  base_com_m: [0.0, 0.0, 0.1]
+  ground_material: null
+  active_wheel_material: null
+  caster_material: null

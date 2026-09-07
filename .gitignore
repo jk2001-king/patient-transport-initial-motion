@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+build/
+install/
+log/
+results/**
+!results/.gitkeep
+*.tmp.usd
+*.autosave.usd
