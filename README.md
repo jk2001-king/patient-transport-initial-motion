@@ -1,4 +1,4 @@
-# Patient Initial Motion Stability Workspace
+# Patient Transport Initial Motion Stability
 
 전·후 2개의 steer-drive wheel과 4개의 passive caster를 가진 환자이승로봇의
 초기 주행 안정성을 연구하기 위한 워크스페이스다.
