@@ -142,6 +142,46 @@ model fidelity 향상`이다.
 7. physical steering이 정의한 양의 방향이면 `s=+1`, 반대면 `s=-1`로 기록한다.
 8. wheel velocity도 작은 양의 값으로 시험해 차체 +X로 움직이는 sign을 기록한다.
 
+front/rear 조향을 이름 기반으로 안전하게 하나씩 움직이려면 Play 상태의 Script Editor에서
+다음 파일을 한 번 로드한다.
+
+```python
+exec(open("/home/jk/Research/patient_initial_ws/scripts/steering_calibration.py").read())
+```
+
+그다음 아래 명령을 한 줄씩 실행하고 Top view에서 바퀴 방향을 관찰한다.
+
+```python
+set_raw_steering_deg(front_deg=5.0)
+read_steering()
+set_raw_steering_deg(front_deg=0.0)
+
+set_raw_steering_deg(rear_deg=5.0)
+read_steering()
+set_raw_steering_deg(rear_deg=0.0)
+```
+
+각 `set` 명령 후 약 1초 기다린 뒤 `read_steering()`을 실행한다. 이 단계의 `+5°`는
+physical angle이 아니라 raw simulator target이다. 관찰 결과를 이용해 physical sign을
+결정한다.
+
+목표에 정착하지 않거나 velocity가 계속 0이 아니면 다음을 실행해 controller가 유지 중인
+target, runtime gain, measured effort를 함께 확인한다.
+
+```python
+diagnose_steering()
+```
+
+단일 snapshot만으로 진동 여부를 판정할 수 없으면 0°에서 2초 정착한 뒤 +5° step을
+5초간 자동 기록한다. 다음 명령은 비동기로 실행되므로 physics를 막지 않는다.
+
+```python
+start_front_step_test()
+```
+
+명령 실행 후 Timeline을 건드리지 않고 약 7초 기다린다. Console에 출력되는 CSV 행과
+`Front steering step summary`를 함께 보존한다.
+
 계산은 항상 다음 변환을 통과시킨다.
 
 ```text
@@ -154,7 +194,19 @@ q_raw_command = q0 + delta_command / s
 
 ### Script Editor에서 상태 확인
 
-Play를 누른 후 `Window > Script Editor`에서 다음 형태로 확인한다.
+Play를 누른 후 `Window > Script Editor`를 열고 아래 블록 전체를 한 번에 붙여넣어
+실행한다. 아래쪽 index 코드는 위쪽에서 생성한 `robot` 객체를 사용하므로 별개의
+스크립트가 아니다.
+
+복사 중 코드가 깨지는 것을 막으려면 Script Editor에서 아래 한 줄만 실행하는 방법을
+권장한다.
+
+```python
+exec(open("/home/jk/Research/patient_initial_ws/scripts/check_joint_state.py").read())
+```
+
+이 명령은 workspace의 `scripts/check_joint_state.py`를 읽어 실행한다. 출력의 첫 번째
+`===`부터 마지막 줄까지 복사하여 점검 기록으로 남긴다.
 
 ```python
 from isaacsim.core.prims import SingleArticulation
@@ -165,14 +217,29 @@ robot.initialize()
 print(robot.dof_names)
 print("position [rad] =", robot.get_joint_positions())
 print("velocity [rad/s] =", robot.get_joint_velocities())
-```
 
-배열 index를 손으로 고정하지 말고 반드시 이름으로 만든다.
-
-```python
+# DOF 배열 index를 숫자로 외우지 않고 joint name으로 찾는다.
 index = {name: i for i, name in enumerate(robot.dof_names)}
 front_steer_i = index["front_steering_joint"]
 rear_steer_i = index["rear_steering_joint"]
+front_wheel_i = index["front_wheel_joint"]
+rear_wheel_i = index["rear_wheel_joint"]
+
+q = robot.get_joint_positions()
+qd = robot.get_joint_velocities()
+
+print("front steering [rad] =", q[front_steer_i])
+print("rear steering [rad] =", q[rear_steer_i])
+print("front wheel [rad/s] =", qd[front_wheel_i])
+print("rear wheel [rad/s] =", qd[rear_wheel_i])
+```
+
+위 블록을 먼저 실행한 뒤 angle을 바꾸고 상태를 다시 읽고 싶다면, 같은 Script Editor
+세션에서 아래 두 줄만 다시 실행해도 된다.
+
+```python
+print("position [rad] =", robot.get_joint_positions())
+print("velocity [rad/s] =", robot.get_joint_velocities())
 ```
 
 ## 5. reset과 caster 초기각 지정

@@ -2,10 +2,13 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 .venv/
+.vscode/
 build/
 install/
 log/
 results/**
 !results/.gitkeep
+motor_bag/
+motor_file/
 *.tmp.usd
 *.autosave.usd

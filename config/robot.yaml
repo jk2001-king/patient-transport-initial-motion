@@ -6,14 +6,15 @@ robot:
     sha256: 0eefdabc717cbe110749dde3c20c61f47e6d47f96601d3d70e00be91f010aedb
   workspace_usd:
     path: isaac_model/patient_transport.usd
-    sha256: 0eefdabc717cbe110749dde3c20c61f47e6d47f96601d3d70e00be91f010aedb
+    sha256: d8612c03e724bcc30c38bde19d5319728f96488e1d4dd0725b368f28f7d16a61
+    note: current tested workspace model; differs from the initial copied wrapper
   articulation_root: /World/patient_transport/base_link
   base_prim: /World/patient_transport/base_link
 
 frames:
   body_reference: /World/patient_transport/base_link
-  forward_axis: +X             # inferred from front/rear geometry; GUI verify
-  left_axis: +Y                # inferred from FL/FR naming; GUI verify
+  forward_axis: +X             # verified after ACKERMANN raw-zero calibration
+  left_axis: +Y                # right-handed planar frame with up_axis=+Z
   up_axis: +Z
 
 geometry_si:
@@ -32,29 +33,33 @@ joints:
     front:
       prim_path: /World/patient_transport/joints/front_steering_joint
       axis: Z
-      raw_straight_rad: null    # must be visually/dynamically calibrated
-      physical_sign: null
-      physical_limits_rad: [-0.7853981634, 0.7853981634] # verified platform limit: ±45 deg
-      max_rate_rad_s: null
-      usd_drive: {type: acceleration, stiffness: 4000.0, damping: 400.0, max_force: 1500.0}
+      raw_straight_rad: 1.5707963268 # raw +90 deg = physical straight
+      physical_sign: 1
+      raw_limits_rad: [0.7853981634, 2.3561944902] # persistent ACKERMANN workspace limits: raw 45..135 deg
+      physical_limits_rad: [-0.7853981634, 0.7853981634] # ACKERMANN operational limits: ±45 deg
+      mode_transition_physical_limits_rad: [-1.5707963268, 1.5707963268] # DIFF mode can reach ±90 deg
+      max_rate_rad_s: 0.2396844987 # 13.732910 deg/s, real Profile Position setting
+      usd_drive: {type: acceleration, stiffness: 10000.0, damping: 1000.0, max_force: 1500.0}
     rear:
       prim_path: /World/patient_transport/joints/rear_steering_joint
       axis: Z
-      raw_straight_rad: null
-      physical_sign: null
-      physical_limits_rad: [-0.7853981634, 0.7853981634] # verified platform limit: ±45 deg
-      max_rate_rad_s: null
-      usd_drive: {type: acceleration, stiffness: 4000.0, damping: 400.0, max_force: 1500.0}
+      raw_straight_rad: 1.5707963268 # raw +90 deg = physical straight
+      physical_sign: 1
+      raw_limits_rad: [0.7853981634, 2.3561944902] # persistent ACKERMANN workspace limits: raw 45..135 deg
+      physical_limits_rad: [-0.7853981634, 0.7853981634] # ACKERMANN operational limits: ±45 deg
+      mode_transition_physical_limits_rad: [-1.5707963268, 1.5707963268] # DIFF mode can reach ±90 deg
+      max_rate_rad_s: 0.2396844987 # 13.732910 deg/s, real Profile Position setting
+      usd_drive: {type: acceleration, stiffness: 10000.0, damping: 1000.0, max_force: 1500.0}
   drive:
     front:
       prim_path: /World/patient_transport/joints/front_wheel_joint
       axis: X
-      velocity_sign: null
+      velocity_sign: 1         # positive robot-forward speed -> positive joint velocity
       usd_drive: {type: force, stiffness: 0.0, damping: 1.0, max_force: null}
     rear:
       prim_path: /World/patient_transport/joints/rear_wheel_joint
       axis: X
-      velocity_sign: null
+      velocity_sign: -1        # positive robot-forward speed -> negative joint velocity
       usd_drive: {type: force, stiffness: 0.0, damping: 1.0, max_force: null}
   caster:
     fl: {swivel_prim_path: /World/patient_transport/joints/caster_fl_swivel_joint, spin_prim_path: /World/patient_transport/joints/caster_fl_wheel_joint, swivel_zero_rad: null, swivel_sign: null}
@@ -64,13 +69,21 @@ joints:
 
 physics:
   scene_prim: /physicsScene
-  timestep_s: null             # not authored in current USD
+  timestep_s: 0.0083333333     # calibrated model: 120 Hz
   substeps: null
   solver_type: null
   use_gpu_dynamics: null
   base_mass_kg: 220.0
   assembled_rigid_body_mass_kg: 240.3372079473
   base_com_m: [0.0, 0.0, 0.1]
-  ground_material: null
-  active_wheel_material: null
+  ground_material: {steering_response_equivalent_friction: 0.0025, longitudinal_friction: null}
+  active_wheel_material: {steering_response_equivalent_friction: 0.0025, longitudinal_friction: null}
   caster_material: null
+  calibration_note: "mu_eq is steering-response matched and must not be treated as calibrated longitudinal tire traction"
+  drive_sign_test:
+    condition: {friction: 0.5, physics_hz: 120, target_joint_speed_rad_s: 1.0, duration_s: 2.0}
+    command: {front_rad_s: 1.0, rear_rad_s: -1.0}
+    displacement_world_m: {x: -0.0000246152, y: -0.1499203742}
+    distance_m: 0.1499203762
+    delta_yaw_deg: 0.000974
+    conclusion: "robot-forward is world -Y; front/rear joint velocity signs are +1/-1"

@@ -1,0 +1,32 @@
+steering_configuration_controller:
+  ros__parameters:
+    use_sim_time: true
+    configuration: coordinated_counterphase
+    control_rate_hz: 30.0
+    command_timeout_s: 0.5
+    wheelbase_m: 1.29
+    front_length_m: 0.645
+    rear_length_m: 0.645
+    wheel_radius_m: 0.075
+    steering_raw_zero_rad: 1.5707963268
+    steering_limit_rad: 0.7853981634
+    max_steering_rate_rad_s: 0.2396844987
+    max_linear_acceleration_m_s2: 0.02
+    max_linear_speed_m_s: 0.30
+    max_angular_speed_rad_s: 0.50
+    path_tracking_model: common_base
+    path_tracking_lookahead_m: 0.20
+    initial_alignment_policy: simultaneous
+    cmd_vel_topic: /sim/cmd_vel
+    # Optional pre-smoothing command used only to classify initial alignment.
+    initial_reference_cmd_vel_topic: ""
+    initial_alignment_tolerance_deg: 1.5
+    initial_alignment_hold_s: 0.25
+    # Single-run screening candidate: <=20 deg immediate, >20 deg scaled start.
+    # Revalidate with repeated runs and additional path/speed conditions.
+    initial_alignment_zero_speed_error_deg: 20.0
+    # Configuration/state-aware candidates from single-run screening.
+    front_only_alignment_threshold_deg: 35.0
+    rear_only_alignment_threshold_deg: 35.0
+    coordinated_common_threshold_deg: 20.0
+    coordinated_counter_threshold_deg: 35.0
