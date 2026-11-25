@@ -2,6 +2,11 @@
 
 ![ROS 2 Humble](https://img.shields.io/badge/ROS_2-Humble-22314E?logo=ros&logoColor=white)
 ![Ubuntu 22.04](https://img.shields.io/badge/Ubuntu-22.04-E95420?logo=ubuntu&logoColor=white)
+![Isaac Sim 5.0](https://img.shields.io/badge/Isaac_Sim-5.0-76B900?logo=nvidia&logoColor=white)
+
+![Nav2 Integration](https://img.shields.io/badge/Navigation-Nav2_Integration-0066CC)
+![Configuration-Aware Control](https://img.shields.io/badge/Control-Configuration--Aware-7B3FB2)
+![Dual Steer-Drive](https://img.shields.io/badge/Platform-Dual_Steer--Drive-1478C8)
 ![Research stage](https://img.shields.io/badge/Research-Precursor_Prototype-555555)
 
 전·후 2개의 steer-drive wheel과 4개의 passive caster를 가진 환자이승로봇의
