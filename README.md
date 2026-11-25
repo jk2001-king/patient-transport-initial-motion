@@ -1,13 +1,37 @@
 # Patient Transport Initial Motion Stability
 
+![ROS 2 Humble](https://img.shields.io/badge/ROS_2-Humble-22314E?logo=ros&logoColor=white)
+![Ubuntu 22.04](https://img.shields.io/badge/Ubuntu-22.04-E95420?logo=ubuntu&logoColor=white)
+![Research stage](https://img.shields.io/badge/Research-Precursor_Prototype-555555)
+
 전·후 2개의 steer-drive wheel과 4개의 passive caster를 가진 환자이승로봇의
 초기 주행 안정성을 연구하기 위한 ROS 2–Isaac Sim 워크스페이스다.
 
-현재 목표는 **조향 구성, 능동륜 초기 조향상태, 경로 첫 구간의 요구운동**을 함께 보고
+> **현재 역할:** 초기 조향 구성·정렬 출발 제어의 선행 prototype을 보존하는 저장소이다.
+> 후속 연구는 CICS 미세 yaw 출발·복원 제어와 IJCAS 다중 조향 경로계획으로 분리했다.
+> 이 저장소의 코드에 후속 논문의 최종 실험 결과가 구현되어 있다고 해석하지 않는다.
+
+## 연구 흐름과 후속 저장소
+
+| 저장소 | 대상 문제 | 사용 목적 |
+|---|---|---|
+| **이 저장소** | 초기 능동 조향각과 요구운동의 불일치 | configuration-aware 정렬·출발 정책과 초기 ROS/Nav2 prototype |
+| [micro-yaw-initial-motion-control](https://github.com/jk2001-king/micro-yaw-initial-motion-control) | 캐스터 전환·하중/CoM 변화에 따른 방향 전환 출발 오차 | CICS 두 플랫폼의 미세 yaw 초기 구동·복원 및 원본 지표 재계산 |
+| [multi-steering-motion-planning](https://github.com/jk2001-king/multi-steering-motion-planning) | 조향 전환·응답 지연이 경로와 점유영역에 주는 영향 | IJCAS 병원 H1–H6 계획·실행 및 별도 센서 통합 |
+| [transfer_robot_nav2](https://github.com/jk2001-king/transfer_robot_nav2) | 실물 플랫폼의 센서·측위·자율주행 통합 | 별도 하드웨어 Nav2 워크스페이스 |
+
+연구 동기는 이어지지만 제어기·모델·조건·평가가 다르므로 세 연구 저장소를 각각 유지한다.
+코드를 최신 논문 구현으로 덮어쓰거나 선행 screening 결과를 후속 실험의 반복 수에 합치지 않는다.
+세부 구분은 [연구 범위와 계보](docs/RESEARCH_LINEAGE.md)에 정리했다.
+
+## 선행 연구 범위
+
+이 단계의 목표는 **조향 구성, 능동륜 초기 조향상태, 경로 첫 구간의 요구운동**을 함께 보고
 즉시 출발 또는 조향오차 기반 제한 출발을 선택하는 configuration-aware initial motion
 control을 검증하는 것이다. Passive caster 초기방향은 보조 변수로 유지하되 caster-only
-controller는 선행 screening에서 반복 가능한 차체 교란이 확인되지 않아 주 연구범위에서
-제외했다.
+controller는 당시 screening에서 반복 가능한 차체 교란이 확인되지 않아 이 prototype의
+주 연구범위에서 제외했다. 이는 모든 플랫폼·접촉·하중에서 caster 영향이 없다는 결론이
+아니며, 후속 CICS는 별도의 플랫폼·접촉·하중 조건에서 캐스터 전환을 평가한다.
 
 현재 플랫폼의 front/rear steering 물리 한계는 **±45°**다. 워크스페이스 USD에는
 ±45°, 120 Hz, 검증된 steering drive gain과 조향응답 등가 접촉값이 적용되어 있다.
@@ -24,7 +48,7 @@ controller는 선행 screening에서 반복 가능한 차체 교란이 확인되
 2. 전륜 단독, 후륜 단독, 전후륜 역상 조향에서 어떤 조향오차를 출발 판단에 사용해야 하는가?
 3. 경로 정확도를 유지하면서 불필요한 정렬 대기시간을 줄일 수 있는가?
 
-## 현재 상태
+## 보존된 prototype의 상태와 screening 결과
 
 - 실제 플랫폼 caster Go/No-Go 20회와 Isaac Sim caster screening에서 caster 초기방향에
   따른 반복 가능한 횡편차·yaw 증가를 확인하지 못했다.
@@ -105,7 +129,10 @@ src/patient_initial_stability/  ROS 2 제어기·Nav2·시험 패키지
 results/                        생성 결과 (Git 제외)
 ```
 
-## 즉시 다음 작업
+## 당시 후속 검증 계획
+
+아래는 선행 prototype 단계에서 작성한 계획이다. 완료된 후속 CICS/IJCAS 연구의
+실행법이나 미완료 항목 목록으로 사용하지 않으며, 최신 실행은 각 저장소를 따른다.
 
 1. 초기각·속도·경로곡률을 바꾼 반복시험으로 현재 threshold의 민감도를 검증한다.
 2. 곡선 시작, 좁은 통로 등 초기 deviation이 navigation 여유를 줄이는 조건을 추가한다.
